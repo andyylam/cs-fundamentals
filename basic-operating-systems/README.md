@@ -1,4 +1,8 @@
-# Operating Systems
+# Operating Systems 
+
+## Table of Contents  
+[Process Abstraction](#process-abstraction)  
+[Memory Abstraction](#memory-abstraction)  
 
 ### Difference between kernel and OS
 
@@ -68,18 +72,54 @@ A thread is an entity within a process that can be scheduled for execution. All 
 ### Interprocess Communication
 
 1. Shared Memory 
-  - Shared memory is memory that may be simultaneously accessed by multiple programs with an intent to provide communication among them. Shared memory is an efficient means of passing data between programs. However, race conditions may occur if memory accesses are not handled properly. 
+    - Shared memory is memory that may be simultaneously accessed by multiple programs with an intent to provide communication among them. Shared memory is an efficient means of passing data between programs. However, race conditions may occur if memory accesses are not handled properly. 
 
 2. Message Passing
-  - Processes communicate with each other by exchanging messages. This is done through system calls that help `send` and `receive`.  The send, receive, and reply operations may be synchronous or asynchronous. 
+    - Processes communicate with each other by exchanging messages. This is done through system calls that help `send` and `receive`.  The send, receive, and reply operations may be synchronous or asynchronous. 
 
 3. Unix Pipes
-  - A pipeline is a mechanism for inter-process communication using message passing. 
-  - A pipeline is a set of processes chained together by their standard streams, so that the output text of each process (stdout) is passed directly as input (stdin) to the next one. 
+    - A pipeline is a mechanism for inter-process communication using message passing. 
+    - A pipeline is a set of processes chained together by their standard streams, so that the output text of each process (stdout) is passed directly as input (stdin) to the next one. 
 
 ### Synchronisation 
 
 - Busy waiting
 - Semaphores
 
+#### Difference between mutex and semaphore
+
+Strictly speaking, a mutex is locking mechanism used to synchronize access to a resource. Only one task (can be a thread or process based on OS abstraction) can acquire the mutex. It means there is ownership associated with mutex, and only the owner can release the mutex.
+
+Semaphore is signaling mechanism. It is a generalized mutex that can be used across threads/processes.
+
+#### Deadlocks
+
+Deadlocks occur when two or more processes wait for each other to finish and none of them ever finish. This occurs when there are multiple processes hold some resources and wait for resources held by other(s).
+
+Conditions for deadlock:
+  1. Mutual Exclusion: There is a resource that cannot be shared.
+  1. Hold and Wait: A process is holding at least one resource and waiting for another resource which is with some other process.
+  1. No Preemption: The operating system is not allowed to take a resource back from a process until process gives it back.
+  1. Circular Wait:  A set of processes are waiting for each other in circular form.
+
 ## Memory Abstraction
+
+The operating system abstracts away memory management from the user processes. User processes think that its memory is contiguous, but this is dependent on the operating system's implementation. 
+
+Process memory space can be indisjoint physical memory locations. This can be done via paging or segmentation.
+
+### Paging 
+
+- The physical memory is split into regions of fixed size, known as physical frame.
+- The logical memory, which has same size as physical, is also split into regions of same size, known as logical page. 
+- At execution time, pages of a process are loaded into any available memory frame. The process will still occupy a contiguous logical memory space.
+- A mapping of logical page to corresponding physical frame is kept with a page table. This is kept in the operating system memory region.
+- Specialized hardware called Translation Lookaside Buffer (TLB) is used to cache a few page entries.
+
+### Virtual Memory 
+
+In virtual memory management, we allow logical memory space of a process to be larger than physical memory. The logical address space can either reside in physical memory or in secondary storage.
+
+Page faults occur when pages of memory required by the process is not in memory (page table) and in the disk instead. IO operation is required to swap out pages between the memory and disk.
+
+Thrashing is a situation when the performance of a computer degrades or collapses. Thrashing occurs when a system spends more time processing page faults than executing transactions. As the page fault rate increases, more transactions need processing from the paging device. The queue at the paging device increases, resulting in increased service time for a page fault 
