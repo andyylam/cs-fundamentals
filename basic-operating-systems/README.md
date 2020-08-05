@@ -1,8 +1,9 @@
-# Operating Systems 
+# Introduction to Operating Systems 
 
 ## Table of Contents  
 [Process Abstraction](#process-abstraction)  
 [Memory Abstraction](#memory-abstraction)  
+[File Abstraction](#file-abstraction)  
 
 ### Difference between kernel and OS
 
@@ -27,6 +28,10 @@ Memory Context
 - Data section (global variables)
 - Stack (memory for function calls)
 - Heap (dynamically allocated memory)
+
+The entire execution context for a process is stored in `Process Control Block`, maintained by the kernel. The PCB contains memory, hardware and process context. 
+
+![Image of PCB](assets/pcb.png)
 
 ### System Calls
 
@@ -123,3 +128,36 @@ In virtual memory management, we allow logical memory space of a process to be l
 Page faults occur when pages of memory required by the process is not in memory (page table) and in the disk instead. IO operation is required to swap out pages between the memory and disk.
 
 Thrashing is a situation when the performance of a computer degrades or collapses. Thrashing occurs when a system spends more time processing page faults than executing transactions. As the page fault rate increases, more transactions need processing from the paging device. The queue at the paging device increases, resulting in increased service time for a page fault 
+
+## File Abstraction
+
+File systems provides an abstraction of accessing and using the files and directories.
+
+File operations:
+  1. Create
+  2. Open
+  3. Read
+  4. Write
+  5. Seek
+  6. Truncate
+
+These operations are provided by system calls, which provide protection, concurrent and efficient access and also maintains necessary information. OS needs to keep information for an opened file in an open-file table:
+  1. File pointer: current location
+  2. Disk location: actual file location on disk
+  3. Open count: how many processes has the file open
+
+To keep track of these information, we need a system-wide open-file table and also per-process open-file table. The system-wide open-file table corrresponds to a unique file, whereas the per-process open-file table entry corresponds to an entry in a system-wide table.
+
+![Image of file table](assets/file-table.png)
+
+### Links 
+
+### Hard Links 
+
+Hard links can only be used on files.
+A hard link of a file F in directory A to another directory B makes A and B have separate pointers pointing to the actual file in disk. Deleting the file may cause problems.
+
+### Symbolic Links
+
+Symbolic links can be used on files and directories.
+B will create a special link file G where G contains the path name of F. When G is accessed, it finds out where F is and accessed F. This solves the problem of deletion, but has larger overhead.
